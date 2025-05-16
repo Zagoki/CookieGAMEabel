@@ -1,4 +1,5 @@
 import CookieIMG from "../assets/cookie.png";
+import PersonIMG from "../assets/person.gif"; // Nouvelle image
 
 export class ClickableArea {
   gameElement = null;
@@ -9,33 +10,33 @@ export class ClickableArea {
     this.onClick = onClick;
   }
 
- // clickable-area.js
-// Il faut ajouter dans les propriétés de la classe
-// la propriété "clickableAreaElement"
+  render() {
+    // On crée un nouvel élément du DOM.
+    this.clickableAreaElement = document.createElement("section");
+    this.clickableAreaElement.id = "game-clickable-area";
 
-render() {
-  // On crée un nouvel élément du DOM.
-  this.clickableAreaElement = document.createElement("section");
-  this.clickableAreaElement.id = "game-clickable-area";
-  // On modifie son HTML.
-  this.clickableAreaElement.innerHTML = `
-      <img id="cookie" src=${CookieIMG} width="256px" height="256px" alt="An awesome cookie." />
-  `;
-  // On ajoute un listener sur l'évènement "click" à l'élément.
-  this.clickableAreaElement.addEventListener("click", () => {
-    // On ajoute ici la logique d'animation pour la réaction au clique.
-    window.requestAnimationFrame(() => {
-      this.clickableAreaElement.classList.add("active");
-      setTimeout(() => {
-        window.requestAnimationFrame(() => {
-          this.clickableAreaElement.classList.remove("active");
-        });
-      }, 100);
+    // On modifie son HTML pour inclure les deux images.
+    this.clickableAreaElement.innerHTML = `
+      <div class="clickable-container">
+        <img id="cookie" src="${CookieIMG}" alt="Cookie" />
+        <img id="person" src="${PersonIMG}" alt="Person" />
+      </div>
+    `;
+
+    // On ajoute un listener sur l'évènement "click" à l'image du cookie.
+    this.clickableAreaElement.querySelector("#cookie").addEventListener("click", () => {
+      window.requestAnimationFrame(() => {
+        this.clickableAreaElement.classList.add("active");
+        setTimeout(() => {
+          window.requestAnimationFrame(() => {
+            this.clickableAreaElement.classList.remove("active");
+          });
+        }, 100);
+      });
+      this.onClick();
     });
-    this.onClick();
-  });
-  // Il faut ajouter l'élément au DOM pour pouvoir le voir
-  // On l'ajoute donc à notre élément Game.
-  this.gameElement.append(this.clickableAreaElement);
+
+    // On ajoute l'élément au DOM.
+    this.gameElement.append(this.clickableAreaElement);
   }
 }

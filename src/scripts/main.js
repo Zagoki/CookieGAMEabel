@@ -6,29 +6,35 @@ import "../styles/style.css";
 import { Game } from "./game";
 
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>HELP HIM</h1>
-    <h2>Oh non !  <strong>The Weeknd</strong> se fait attaquer par Tung tung tung tung tung Sahur !</h2>
-    <p>Click sur le cookie pour lui faire des dégats !</p>
-    <div class="card">
-    </div>
-  </div>
-  <main id="game"> </main>
+document.querySelector("#app").innerHTML = `
+  <header>
+    <h1>Cookie Clicker Deluxe</h1>
+    <p>Sauvez The Weeknd ! </p>
+  </header>
+  <main id="game-container">
+    <section id="game">
+    </section>
+    <aside id="instructions">
+      <h2>Comment jouer : </h2>
+      <ul>
+        <li>Cliquez sur Tung tung tung tung Sahur pour le vaincre </li>
+        <li>Achetez des améliorations dans la boutique pour etre plus PUISSANT.</li>
+        <li>Une légende raconte qu'un Golden Skibidi Roblox apparait pour vous aider de temps en temps...</li>
+        <li>Faites vite... sinon, Bombardino Crocodilo viendra dans votre lit a 3h du matin</li>
+      </ul>
+    </aside>
+  </main>
+  <footer>
+    <p>J'ai fais ça pour l'école, tout droits a ceux qui veulent, je m'en fous.</p>
+  </footer>
 `
 
 const game = new Game({
   cookies: 0,
+  cursors: 0,
 });
 
-
+game.load();
 game.start();
-
 
 setupCounter(document.querySelector('#counter'))
