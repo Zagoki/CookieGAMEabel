@@ -40,7 +40,7 @@ export class Shop {
   }
 
   getCursorPrice() {
-    return 10 + this.cursors * 3;
+    return 10 + this.cursors * 2;
   }
 
   buyCursor() {

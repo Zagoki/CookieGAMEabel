@@ -5,6 +5,7 @@ import { spawnGoldenCookie } from "./random-spawn";
 export class Game {
   // Game Properties
   cookies = 0;
+  cookieLife = 10000; // Vie totale du cookie à battre
 
   // Game Elements
   gameElement = null;
@@ -17,6 +18,7 @@ export class Game {
   constructor(config) {
     this.cookies = config.cookies ?? 0;
     this.cursors = config.cursors ?? 0; // Ajouté pour la sauvegarde
+    this.cookieLife = config.cookieLife ?? 10000;
     this.gameElement = document.querySelector("#game");
     this.clickableArea = new ClickableArea(
       this.gameElement,
@@ -33,6 +35,9 @@ export class Game {
 
   start() {
     this.render();
+        window.addEventListener("beforeunload", () => {
+      this.save();
+    }); 
   }
 
   render() {
@@ -57,7 +62,8 @@ export class Game {
 
   updateScore() {
     this.scoreElement.innerHTML = `
-        <span>${this.cookies.toFixed(1)} cookies</span>
+      <span>${this.cookies.toFixed(1)} cookies</span><br>
+      <span>Vie du cookie maléfique : ${this.cookieLife.toLocaleString()}</span>
     `;
   }
 
@@ -65,6 +71,7 @@ export class Game {
     const config = {
       cookies: this.cookies,
       cursors: this.shop.cursors,
+      cookieLife: this.cookieLife,
     };
     localStorage.setItem("cookieClickerSave", JSON.stringify(config));
   }
@@ -75,6 +82,7 @@ export class Game {
       const config = JSON.parse(data);
       this.cookies = config.cookies ?? 0;
       this.shop.cursors = config.cursors ?? 0;
+      this.cookieLife = config.cookieLife ?? 100000000;
       this.render(); // Ajouté pour rafraîchir l'affichage après chargement
       this.updateScore();
       if (this.shop.shopElement) this.shop.updateShop();
@@ -82,10 +90,36 @@ export class Game {
   }
 
   onClickableAreaClick = () => {
-    this.cookies += 1;
-    this.save(); // Sauvegarde à chaque clic
+    // Détermine le nombre de cookies gagnés par clic (par défaut 1, ou plus si tu ajoutes des upgrades)
+    const cookiesPerClick = this.cookiesPerClick ?? 1;
+    this.cookies += cookiesPerClick;
+    this.cookieLife -= cookiesPerClick;
+ //   this.save(); // Sauvegarde à chaque clic    ou save before unload 
     window.requestAnimationFrame(() => {
       this.updateScore();
+      if (this.cookieLife <= 0) {
+        this.showVictory();
+      }
     });
   };
+
+  showVictory() {
+    this.gameElement.innerHTML = `
+      <h1>Victoire !</h1>
+      <p>Bravo, tu as vaincu Tung Tung Tung Tung Sahur !</p>
+      <div id="paypal-message" style="margin:2em 0;">
+        <h2>Voici mon Paypal :</h2>
+        <a href="https://www.paypal.com/qrcodes/p2pqrc/2T9GU62LZ3326" target="_blank" style="color:#009cde;font-weight:bold;">
+          https://www.paypal.com/qrcodes/p2pqrc/2T9GU62LZ3326
+        </a>
+      </div>
+      <button id="restart-btn">Rejouer</button>
+    `;
+    document.getElementById("restart-btn").onclick = () => {
+      this.cookies = 0;
+      this.cookieLife = 100000000;
+      this.save();
+      this.render();
+    };
+  }
 }

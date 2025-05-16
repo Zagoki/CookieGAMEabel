@@ -32,6 +32,7 @@ document.querySelector("#app").innerHTML = `
 const game = new Game({
   cookies: 0,
   cursors: 0,
+  cookieLife: 100000000,
 });
 
 game.load();
